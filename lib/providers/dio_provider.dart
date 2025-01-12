@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:digicoop/constants/constants.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
@@ -51,83 +54,341 @@ class DioProvider {
   }
 
   // get user history simpanan
-  Future<dynamic> getUserHistorySimpanan(String token) async {
+  Future<dynamic> getUserHistorySimpanan(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
     try {
-      var response = await Dio().get(userHistorySimpananURL,
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json'
-          }));
+      // Build query parameters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      var response = await Dio().get(
+        userHistorySimpananURL,
+        queryParameters: queryParams,
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json'
+        }),
+      );
       return response.data;
     } on DioException catch (e) {
       if (e.response != null) {
-        // Tangani berbagai jenis error
         if (e.response?.statusCode == 401) {
-          // Token tidak valid
           throw Exception('Unauthorized: Token invalid or expired');
         } else if (e.response?.statusCode == 500) {
-          // Error server
           throw Exception(
               'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
         }
-      } else {
-        // Error koneksi
-        throw Exception('Connection error');
       }
+      throw Exception('Connection error');
     }
   }
 
   // get user history pinjaman
-  Future<dynamic> getUserHistoryPinjaman(String token) async {
+  Future<dynamic> getUserHistoryPinjaman(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
     try {
-      var response = await Dio().get(userHistoryPinjamanURL,
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json'
-          }));
+      // Build query parameters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      var response = await Dio().get(
+        userHistoryPinjamanURL,
+        queryParameters: queryParams,
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json'
+        }),
+      );
       return response.data;
     } on DioException catch (e) {
       if (e.response != null) {
-        // Tangani berbagai jenis error
         if (e.response?.statusCode == 401) {
-          // Token tidak valid
           throw Exception('Unauthorized: Token invalid or expired');
         } else if (e.response?.statusCode == 500) {
-          // Error server
           throw Exception(
               'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
         }
-      } else {
-        // Error koneksi
-        throw Exception('Connection error');
       }
+      throw Exception('Connection error');
     }
   }
 
   // get user history penarikan
-  Future<dynamic> getUserHistoryPenarikan(String token) async {
+  Future<dynamic> getUserHistoryPenarikan(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
     try {
-      var response = await Dio().get(userHistoryPenarikanURL,
-          options: Options(headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json'
-          }));
+      // Build query parameters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      var response = await Dio().get(
+        userHistoryPenarikanURL,
+        queryParameters: queryParams,
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json'
+        }),
+      );
       return response.data;
     } on DioException catch (e) {
       if (e.response != null) {
-        // Tangani berbagai jenis error
         if (e.response?.statusCode == 401) {
-          // Token tidak valid
           throw Exception('Unauthorized: Token invalid or expired');
         } else if (e.response?.statusCode == 500) {
-          // Error server
           throw Exception(
               'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
         }
-      } else {
-        // Error koneksi
-        throw Exception('Connection error');
       }
+      throw Exception('Connection error');
+    }
+  }
+
+  // download simpanan pdf
+  Future<String> downloadSimpananPDF(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
+    try {
+      // Prepare query parameters based on provided filters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      // Make the API request to download the file
+      final response = await Dio().get(
+        userSimpananPDFURL,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/pdf',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      // Get the appropriate directory for file storage
+      Directory? directory;
+      try {
+        directory = await getExternalStorageDirectory();
+      } catch (e) {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        throw Exception('Tidak dapat mengakses direktori penyimpanan');
+      }
+
+      // Create a unique filename using current timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final fileName = 'riwayat_transaksi_$timestamp.pdf';
+      final filePath = '${directory.path}/$fileName';
+
+      // Save the downloaded data to a file
+      final file = File(filePath);
+      await file.writeAsBytes(response.data);
+
+      return filePath;
+    } on DioException catch (e) {
+      // Handle specific Dio-related errors
+      if (e.response != null) {
+        if (e.response?.statusCode == 401) {
+          throw Exception('Unauthorized: Token invalid or expired');
+        } else if (e.response?.statusCode == 500) {
+          throw Exception(
+              'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
+        }
+      }
+      throw Exception('Connection error');
+    } catch (e) {
+      throw Exception('Gagal menyimpan file: $e');
+    }
+  }
+
+  // download pinjaman pdf
+  Future<String> downloadPinjamanPDF(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
+    try {
+      // Prepare query parameters based on provided filters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      // Make the API request to download the file
+      final response = await Dio().get(
+        userPinjamanPDFURL,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/pdf',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      // Get the appropriate directory for file storage
+      Directory? directory;
+      try {
+        directory = await getExternalStorageDirectory();
+      } catch (e) {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        throw Exception('Tidak dapat mengakses direktori penyimpanan');
+      }
+
+      // Create a unique filename using current timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final fileName = 'riwayat_transaksi_$timestamp.pdf';
+      final filePath = '${directory.path}/$fileName';
+
+      // Save the downloaded data to a file
+      final file = File(filePath);
+      await file.writeAsBytes(response.data);
+
+      return filePath;
+    } on DioException catch (e) {
+      // Handle specific Dio-related errors
+      if (e.response != null) {
+        if (e.response?.statusCode == 401) {
+          throw Exception('Unauthorized: Token invalid or expired');
+        } else if (e.response?.statusCode == 500) {
+          throw Exception(
+              'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
+        }
+      }
+      throw Exception('Connection error');
+    } catch (e) {
+      throw Exception('Gagal menyimpan file: $e');
+    }
+  }
+
+  // download penarikan pdf
+  Future<String> downloadPenarikanPDF(
+    String token, {
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
+    try {
+      // Prepare query parameters based on provided filters
+      Map<String, dynamic> queryParams = {};
+      if (filterType != null) {
+        queryParams['filter_type'] = filterType;
+        if (filterType == 'Pilih Bulan' && selectedMonth != null) {
+          queryParams['selected_month'] = selectedMonth;
+        }
+        if (filterType == 'Pilih Tahun' && selectedYear != null) {
+          queryParams['selected_year'] = selectedYear;
+        }
+      }
+
+      // Make the API request to download the file
+      final response = await Dio().get(
+        userPenarikanPDFURL,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/pdf',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      // Get the appropriate directory for file storage
+      Directory? directory;
+      try {
+        directory = await getExternalStorageDirectory();
+      } catch (e) {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory == null) {
+        throw Exception('Tidak dapat mengakses direktori penyimpanan');
+      }
+
+      // Create a unique filename using current timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final fileName = 'riwayat_transaksi_$timestamp.pdf';
+      final filePath = '${directory.path}/$fileName';
+
+      // Save the downloaded data to a file
+      final file = File(filePath);
+      await file.writeAsBytes(response.data);
+
+      return filePath;
+    } on DioException catch (e) {
+      // Handle specific Dio-related errors
+      if (e.response != null) {
+        if (e.response?.statusCode == 401) {
+          throw Exception('Unauthorized: Token invalid or expired');
+        } else if (e.response?.statusCode == 500) {
+          throw Exception(
+              'Internal Server Error: ${e.response?.data['message'] ?? 'Unknown error'}');
+        }
+      }
+      throw Exception('Connection error');
+    } catch (e) {
+      throw Exception('Gagal menyimpan file: $e');
     }
   }
 
@@ -596,8 +857,8 @@ class DioProvider {
   }
 
   // store new tabungan
-  Future<dynamic> storeAddTabunganForEmployee(
-      String token, String card_number, double amount, DateTime created_at, String description) async {
+  Future<dynamic> storeAddTabunganForEmployee(String token, String card_number,
+      double amount, DateTime created_at, String description) async {
     try {
       var response = await Dio().post(employeeTambahTabunganURL,
           options: Options(headers: {
@@ -651,8 +912,8 @@ class DioProvider {
   }
 
   // store new Penarikan
-  Future<dynamic> storeAddPenarikanForEmployee(
-      String token, String card_number, double amount, DateTime created_at, String description) async {
+  Future<dynamic> storeAddPenarikanForEmployee(String token, String card_number,
+      double amount, DateTime created_at, String description) async {
     try {
       var response = await Dio().post(employeeTambahPenarikanURL,
           options: Options(headers: {
@@ -679,7 +940,8 @@ class DioProvider {
   }
 
   // get rekap harian for employee
-  Future<dynamic> getRekapHarianForEmployee(String token, String filter, DateTime date) async {
+  Future<dynamic> getRekapHarianForEmployee(
+      String token, String filter, DateTime date) async {
     try {
       var response = await Dio().get(employeeRekapHarianURL,
           options: Options(headers: {
@@ -689,8 +951,7 @@ class DioProvider {
           queryParameters: {
             'filter': filter,
             'date': date.toIso8601String(),
-          }
-        );
+          });
       return response.data;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -740,7 +1001,13 @@ class DioProvider {
 
   // update employee profil
   Future<dynamic> updateEmployeeProfil(
-      String token, String? name, String? username, String? email, String? phone_number, String? district, String? address) async {
+      String token,
+      String? name,
+      String? username,
+      String? email,
+      String? phone_number,
+      String? district,
+      String? address) async {
     try {
       // Create a map that only includes the non-null field we want to update
       Map<String, dynamic> data = {};
@@ -773,5 +1040,4 @@ class DioProvider {
           error.response?.data?['message'] ?? 'Network error occurred');
     }
   }
-
 }

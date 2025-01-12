@@ -1,6 +1,7 @@
-String baseURL = "http://admin_app.test/api"; // laragon
+// String baseURL = "http://admin_app.test/api"; // laragon
 // String baseURL = "http://127.0.0.1:8000/api"; // xampp
 // String baseURL = "http://10.0.2.2/api"; // android
+String baseURL = "https://ltl0vnds-8000.asse.devtunnels.ms/api";
 
 // user url
 // autentikasi api url
@@ -12,6 +13,10 @@ String userDashboardURL = '$baseURL/user/dashboard';
 String userHistorySimpananURL = '$baseURL/user/history-simpanan';
 String userHistoryPenarikanURL = '$baseURL/user/history-penarikan';
 String userHistoryPinjamanURL = '$baseURL/user/history-pinjaman';
+// download api url
+String userSimpananPDFURL = '$baseURL/user/simpanan-pdf';
+String userPinjamanPDFURL = '$baseURL/user/pinjaman-pdf';
+String userPenarikanPDFURL = '$baseURL/user/penarikan-pdf';
 // pengajuan api url
 String userAjukanSimpananURL = '$baseURL/user/ajukan-simpanan';
 String userAjukanPenarikanURL = '$baseURL/user/ajukan-penarikan';

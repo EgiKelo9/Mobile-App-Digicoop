@@ -55,371 +55,390 @@ class _BerandaPklState extends State<BerandaPkl> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 30),
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/BlankProfile.png'), // Sesuaikan gambar
-                      radius: 27,
-                    ),
-                    SizedBox(width: 12),
-                    Column(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 30),
+              // Header with profile
+              Row(
+                children: [
+                  const CircleAvatar(
+                    backgroundImage: AssetImage('assets/BlankProfile.png'),
+                    radius: 27,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data['employee']['name'],
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.brown),
+                          data['employee']['name'] ?? '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.brown,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 4),
                         Text(
-                          '${data['employee']['city']}, ${data['employee']['province']}',
-                          style: TextStyle(fontSize: 14, color: Colors.brown),
+                          '${data['employee']['city'] ?? ''}, ${data['employee']['province'] ?? ''}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.brown,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  ],
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Color(0xB2CFB4A4)),
-                  padding: EdgeInsets.all(6),
-                  child: Stack(
-                    children: [
-                      Icon(Icons.notifications, size: 28),
-                      Positioned(
-                        right: 0,
-                        // Adjusted position for notification icon
-                        child: CircleAvatar(
-                          backgroundColor: Colors.red,
-                          radius: 8,
-                          child: Text(
-                            '5',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xB2CFB4A4),
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: Stack(
+                      children: [
+                        const Icon(Icons.notifications, size: 28),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 16,
+                              minHeight: 16,
+                            ),
+                            child: const Text(
+                              '5',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Date and Transaction Summary Card
+              Card(
+                color: const Color(0xFF69574D),
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
+                                  .format(DateTime.now()),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTransactionSummaryCard(
+                              data['visited']?.toString() ?? '0',
+                              'Transaksi Diproses',
+                              onTap: () => MyApp.navigatorKey.currentState!
+                                  .pushNamed('/emp/transaksi'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTransactionSummaryCard(
+                              data['remaining']?.toString() ?? '0',
+                              'Transaksi Tersisa',
+                              onTap: () => MyApp.navigatorKey.currentState!
+                                  .pushNamed('/emp/tersisa'),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 20),
+              ),
+              const SizedBox(height: 16),
 
-            // Ringkasan Kunjungan
-            Card(
-              color: Color(0xFF69574D),
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      // Start a Row to add an icon next to the text
-                      mainAxisAlignment: MainAxisAlignment
-                          .start, // Align children to the start (left)
-                      children: [
-                        Icon(
-                          Icons.calendar_today, // Add the calendar icon
+              // Total Dana and Activities Card
+              Card(
+                color: const Color(0xFF69574D),
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Total Dana',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '${formatCurrency(data['total_amount'] ?? 0)} /hari ini',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
-                        SizedBox(
-                            width:
-                                8), // Add some space between the icon and the text
-                        Text(
-                          DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
-                              .format(DateTime.now()),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xffffffff),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-
-                    // 25 customer
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // TODO
-                            MyApp.navigatorKey.currentState!.pushNamed('/emp/transaksi');
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(13.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  data['visited'].toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF69574D),
-                                  ),
-                                ),
-                                Text(
-                                  'Transaksi Diproses',
-                                  style: TextStyle(
-                                    color: Color(0xFF67554B),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // 11 customer remaining
-                        GestureDetector(
-                          onTap: () {
-                            // TODO
-                            MyApp.navigatorKey.currentState!.pushNamed('/emp/tersisa');
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(13.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  data['remaining'].toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF69574D),
-                                  ),
-                                ),
-                                Text(
-                                  'Transaksi Tersisa',
-                                  style: TextStyle(
-                                    color: Color(0xFF69574D),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-
-            // Total Dana and Navigasi Aktivitas combined
-            Card(
-              color: Color(0xFF69574D),
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Total Dana
-                    Text(
-                      'Total Dana',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      '${formatCurrency(data['total_amount'])} /hari ini',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Aktivitas',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Aktivitas',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                        // Navigasi Aktivitas
-                        GridView.count(
-                          crossAxisCount: 2,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisSpacing: 0, // Remove spacing between columns
-                          mainAxisSpacing: 0, // Remove spacing between rows
-                          childAspectRatio:
-                              2.7, // Keep the child aspect ratio to make cards wider
-                          children: [
-                            _buildMenuCard('Tabungan', Icons.arrow_upward),
-                            _buildMenuCard('Penarikan', Icons.arrow_downward),
-                            _buildMenuCard(
-                                'Rekap Harian', Icons.calendar_today),
-                            _buildMenuCard('Riwayat Nasabah', Icons.person),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 8),
+                      GridView.count(
+                        crossAxisCount: 2,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        childAspectRatio: 2.5,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                        children: [
+                          _buildMenuCard('Tabungan', Icons.arrow_upward),
+                          _buildMenuCard('Penarikan', Icons.arrow_downward),
+                          _buildMenuCard('Rekap Harian', Icons.calendar_today),
+                          _buildMenuCard('Nasabah', Icons.person),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            // Transaksi Terbaru
+              const SizedBox(height: 16),
+
+              // Recent Transactions
+              const Text(
+                'Transaksi Terbaru',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: _buildTransactionsList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildTransactionSummaryCard(String value, String label,
+      {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
             Text(
-              'Transaksi Terbaru',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              value,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF69574D),
+              ),
             ),
-            SizedBox(height: 10),
-            Expanded(
-              child: (data['transactions'] != null &&
-                      data['transactions'] is List)
-                  ? ListView.builder(
-                      itemCount: data['transactions'].length,
-                      itemBuilder: (context, index) {
-                        final transaction = data['transactions'][index];
-                        return ListTile(
-                          leading: Icon(
-                              data['transactions'][index]
-                                          ['transaction_type_id'] >
-                                      4
-                                  ? Icons.arrow_downward
-                                  : Icons.arrow_upward,
-                              color: Colors.brown),
-                          title: Text(
-                            data['transactions'][index]
-                                        ['transaction_type_id'] ==
-                                    1
-                                ? 'Tabungan'
-                                : (data['transactions'][index]
-                                            ['transaction_type_id'] <=
-                                        4
-                                    ? 'Deposito'
-                                    : (data['transactions'][index]
-                                                ['transaction_type_id'] ==
-                                            5)
-                                        ? 'Penarikan'
-                                        : 'Pinjaman'),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            formatCurrency(transaction['amount'] ?? 0),
-                          ),
-                          trailing: Text(
-                            formatDateTime(
-                                data['transactions'][index]['updated_at']),
-                            textAlign: TextAlign.right,
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Text("Tidak ada transaksi yang ditemukan"),
-                    ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF69574D),
+              ),
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.brown,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-          if (index == 1) {
-            MyApp.navigatorKey.currentState!.pushNamed('/emp/nasabah');
-          } else if (index == 2) {
-            MyApp.navigatorKey.currentState!.pushNamed('/emp/profil');
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/home.png')), label: 'Beranda'),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/nasabah.png')),
-              label: 'Nasabah'),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/profile.png')),
-              label: 'Profil'),
-        ],
       ),
     );
   }
 
   Widget _buildMenuCard(String title, IconData icon) {
     return Card(
-      color: Colors.white, // Set color for each menu card
+      color: Colors.white,
       elevation: 2,
       child: InkWell(
         onTap: () {
-          // Logika navigasi berdasarkan title
           switch (title) {
             case 'Tabungan':
               MyApp.navigatorKey.currentState!.pushNamed('/emp/daftar-tabungan');
               break;
             case 'Penarikan':
-              MyApp.navigatorKey.currentState!.pushNamed('/emp/daftar-penarikan'); // Ganti dengan page Penarikan
+              MyApp.navigatorKey.currentState!.pushNamed('/emp/daftar-penarikan');
               break;
             case 'Rekap Harian':
               MyApp.navigatorKey.currentState!.pushNamed('/emp/rekap-harian');
               break;
-            case 'Riwayat Nasabah':
+            case 'Nasabah':
               MyApp.navigatorKey.currentState!.pushNamed('/emp/nasabah');
               break;
           }
-        }, // Add navigation if needed
+        },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(icon, size: 24, color: Colors.brown),
-              SizedBox(width: 8), // Fixed width compared to height
-              Text(
-                title,
-                style: TextStyle(
-                  color: Color(0xFF543E2D),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                  height: 0.15,
-                  letterSpacing: -0.32,
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Color(0xFF543E2D),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTransactionsList() {
+    if (data['transactions'] == null || (data['transactions'] is! List)) {
+      return const Center(
+        child: Text("Tidak ada transaksi yang ditemukan"),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: data['transactions'].length,
+      itemBuilder: (context, index) {
+        final transaction = data['transactions'][index];
+        return Card(
+          elevation: 1,
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+            leading: Icon(
+              transaction['transaction_type_id'] > 4
+                  ? Icons.arrow_downward
+                  : Icons.arrow_upward,
+              color: Colors.brown,
+            ),
+            title: Text(
+              _getTransactionTypeName(transaction['transaction_type_id']),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              formatCurrency(transaction['amount'] ?? 0),
+              style: const TextStyle(fontSize: 12),
+            ),
+            trailing: Text(
+              formatDateTime(transaction['updated_at']),
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontSize: 11),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _getTransactionTypeName(int typeId) {
+    if (typeId == 1) return 'Tabungan';
+    if (typeId <= 4) return 'Deposito';
+    if (typeId == 5) return 'Penarikan';
+    return 'Pinjaman';
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      selectedItemColor: Colors.brown,
+      unselectedItemColor: Colors.grey,
+      currentIndex: _selectedIndex,
+      onTap: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        if (index == 1) {
+          MyApp.navigatorKey.currentState!.pushNamed('/emp/nasabah');
+        } else if (index == 2) {
+          MyApp.navigatorKey.currentState!.pushNamed('/emp/profil');
+        }
+      },
+      items: const [
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/home.png')),
+          label: 'Beranda',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/nasabah.png')),
+          label: 'Nasabah',
+        ),
+        BottomNavigationBarItem(
+          icon: ImageIcon(AssetImage('assets/profile.png')),
+          label: 'Profil',
+        ),
+      ],
     );
   }
 }

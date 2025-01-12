@@ -113,7 +113,7 @@ class _loginpklState extends State<loginpkl> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 48),
+                Spacer(),
                 Consumer<AuthModel>(
                   builder: (context, auth, child) {
                     return Center(
@@ -157,15 +157,7 @@ class _loginpklState extends State<loginpkl> {
                     );
                   },
                 ),
-                const SizedBox(height: 16),
-                Center(
-                  child: IconButton(
-                    icon: const Icon(Icons.help, color: Colors.orange),
-                    onPressed: () {
-                      // Implementasi tombol Help
-                    },
-                  ),
-                ),
+                const SizedBox(height: 32),
               ],
             ),
           ),

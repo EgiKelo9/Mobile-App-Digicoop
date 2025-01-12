@@ -55,13 +55,14 @@ class _NasabahPklState extends State<NasabahPkl> {
         preferredSize: Size.fromHeight(100),
         child: SafeArea(
           child: Padding(
-            padding:
-                EdgeInsets.only(top: 40), // Sesuaikan spacing yang diinginkan
+            padding: EdgeInsets.only(top: 40),
             child: AppBar(
               title: Text(
                 "Nasabah",
-                style:
-                    TextStyle(color: Colors.brown, fontWeight: FontWeight.bold, fontSize: 24),
+                style: TextStyle(
+                    color: Colors.brown,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24),
               ),
               backgroundColor: Colors.white,
               elevation: 0,
@@ -74,12 +75,12 @@ class _NasabahPklState extends State<NasabahPkl> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Pencarian nasabah
             TextField(
+              controller: searchController,
               decoration: InputDecoration(
                 hintText: 'Cari Nasabah',
                 filled: true,
-                fillColor: const Color(0xFFFDEFEA), // Warna cream muda
+                fillColor: const Color(0xFFFDEFEA),
                 prefixIcon: const Icon(Icons.search, color: Colors.brown),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -88,86 +89,90 @@ class _NasabahPklState extends State<NasabahPkl> {
               ),
             ),
             const SizedBox(height: 16),
-            // Daftar nasabah
             Expanded(
               child: ListView.builder(
-                itemCount: data['user'].length,
+                itemCount: data['user']?.length ?? 0,
                 itemBuilder: (context, index) {
                   final nasabah = data['user'][index];
-                  return Container(
-                    padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFDEFEA),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            // Status icon
-                            Icon(
-                              nasabah['status']
-                                  ? Icons.check_circle
-                                  : Icons.cancel,
-                              color:
-                                  nasabah['status'] == 'Aktif' ? Colors.green : Colors.red,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 12),
-                            // Nama dan alamat nasabah
-                            Column(
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFDEFEA),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            nasabah['status'] == 'Aktif'
+                                ? Icons.check_circle
+                                : Icons.cancel,
+                            color: nasabah['status'] == 'Aktif'
+                                ? Colors.green
+                                : Colors.red,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  nasabah['name'],
+                                  nasabah['name'] ?? '',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.brown,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                const SizedBox(height: 4),
                                 Text(
-                                  nasabah['address'],
+                                  nasabah['address'] ?? '',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.brown,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                        SizedBox(width: 12),
-                        // Tombol View Details
-                        ElevatedButton(
-                          onPressed: () {
-                            // Navigasi ke halaman detail
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailNasabahPage(nasabah: nasabah),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFFFFF2E6), // Warna cream button
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 9.0, vertical: 8.0),
                           ),
-                          child: const Text(
-                            'View Details',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.brown,
-                              fontWeight: FontWeight.bold,
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 100, // Fixed width for the button
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetailNasabahPage(nasabah: nasabah),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFFF2E6),
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 8.0),
+                              ),
+                              child: const Text(
+                                'View Details',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.brown,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },

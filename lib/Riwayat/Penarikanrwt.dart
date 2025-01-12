@@ -17,17 +17,79 @@ class _PenarikanrwtState extends State<Penarikanrwt> {
   bool _isLoading = true;
   Map<String, dynamic> data = {};
 
-  Future<void> getData() async {
+  Future<void> getData({
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('tokenUser') ?? '';
     if (token.isNotEmpty) {
-      final response = await DioProvider().getUserHistoryPenarikan(token);
+      // Pass the filter parameters to the API call
+      final response = await DioProvider().getUserHistoryPenarikan(
+        token,
+        filterType: filterType,
+        selectedMonth: selectedMonth,
+        selectedYear: selectedYear,
+      );
       if (response != null) {
         setState(() {
           data = response;
-          print(data);
         });
       }
+    }
+  }
+
+  Future<void> downloadTransactionData({
+    // Add optional parameters for filtering
+    String? filterType,
+    String? selectedMonth,
+    String? selectedYear,
+  }) async {
+    try {
+      // Set loading state to true at the start
+      setState(() {
+        _isLoading = true;
+      });
+      
+      // Get the authentication token from SharedPreferences
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('tokenUser') ?? '';
+      
+      // Validate token existence
+      if (token.isEmpty) {
+        throw Exception('Token tidak ditemukan');
+      }
+
+      // Call the DioProvider function with the provided filter parameters
+      final downloadedFilePath = await DioProvider().downloadPenarikanPDF(
+        token,
+        filterType: filterType,
+        selectedMonth: selectedMonth,
+        selectedYear: selectedYear,
+      );
+
+      // Show success message with the downloaded file name
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('File berhasil diunduh: ${downloadedFilePath.split('/').last}'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      // Log the error and show error message to user
+      print('Error downloading file: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal mengunduh file'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      // Reset loading state regardless of success or failure
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -110,18 +172,33 @@ class _PenarikanrwtState extends State<Penarikanrwt> {
                     IconButton(
                       icon:
                           Icon(Icons.filter_list_alt, color: Color(0xFF7B5233)),
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => rentangwaktu()),
                         );
+                        if (result != null && result is Map<String, dynamic>) {
+                          // Apply the filters and refresh data
+                          await getData(
+                            filterType: result['filter_type'],
+                            selectedMonth: result['selected_month'],
+                            selectedYear: result['selected_year'],
+                          );
+                        }
+                        setState(() {
+                          _isLoading = false;
+                        });
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.download, color: Color(0xFF7B5233)),
                       onPressed: () {
                         // Implement download functionality
+                        _isLoading ? null : downloadTransactionData;
                       },
                     ),
                   ],
