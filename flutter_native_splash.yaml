@@ -1,0 +1,6 @@
+flutter_native_splash:
+  color: "#ffffff"  # warna background
+  image: assets/intro.png  # path gambar splash
+  android: true
+  ios: true
+  web: false
