@@ -374,7 +374,7 @@ class _BerandaPklState extends State<BerandaPkl> {
         return Card(
           elevation: 1,
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: -4.0),
             leading: Icon(
               transaction['transaction_type_id'] > 4
                   ? Icons.arrow_downward

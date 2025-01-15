@@ -198,7 +198,7 @@ class _pinjamanState extends State<pinjaman> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 60),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

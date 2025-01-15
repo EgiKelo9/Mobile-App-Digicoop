@@ -72,7 +72,7 @@ class _BerandaState extends State<Beranda> {
           await getData();
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -99,7 +99,7 @@ class _BerandaState extends State<Beranda> {
                             ),
                           ),
                           Text(
-                            data['user']['name'],
+                            data['user']?['name'] ?? "Nama tidak tersedia",
                             // data['user']("name"),
                             style: TextStyle(
                               fontSize: 18,

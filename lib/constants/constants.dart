@@ -1,7 +1,8 @@
-// String baseURL = "http://admin_app.test/api"; // laragon
+String baseURL = "http://admin_app.test/api"; // laragon
 // String baseURL = "http://127.0.0.1:8000/api"; // xampp
 // String baseURL = "http://10.0.2.2/api"; // android
-String baseURL = "https://ltl0vnds-8000.asse.devtunnels.ms/api";
+// String baseURL = "https://ltl0vnds-8000.asse.devtunnels.ms/api";
+// String baseURL = "http://0.0.0.0:80/api";
 
 // user url
 // autentikasi api url
