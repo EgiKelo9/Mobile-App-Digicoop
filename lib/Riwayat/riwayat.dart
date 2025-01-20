@@ -111,7 +111,7 @@ class _RiwayatState extends State<Riwayat> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

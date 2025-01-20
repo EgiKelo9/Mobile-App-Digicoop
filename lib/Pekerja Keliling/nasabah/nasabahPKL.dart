@@ -27,8 +27,8 @@ class _NasabahPklState extends State<NasabahPkl> {
       if (response != null) {
         setState(() {
           data = response;
-          filteredUsers = List.from(data['user']);
-          // print(data);
+          filteredUsers = List.from(
+              data['user']); // Initialize filteredUsers with all users
         });
       }
     }
@@ -43,19 +43,24 @@ class _NasabahPklState extends State<NasabahPkl> {
       });
     });
     searchController.addListener(() {
-      filterTransactions(searchController.text);
+      filterCustomers(searchController.text);
     });
     print(filteredUsers);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: 40),
+            padding: EdgeInsets.only(top: 10),
             child: AppBar(
               title: Text(
                 "Nasabah",
@@ -82,6 +87,15 @@ class _NasabahPklState extends State<NasabahPkl> {
                 filled: true,
                 fillColor: const Color(0xFFFDEFEA),
                 prefixIcon: const Icon(Icons.search, color: Colors.brown),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear, color: Colors.brown),
+                        onPressed: () {
+                          searchController.clear();
+                          filterCustomers('');
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide.none,
@@ -90,93 +104,105 @@ class _NasabahPklState extends State<NasabahPkl> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                itemCount: data['user']?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final nasabah = data['user'][index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFDEFEA),
-                        borderRadius: BorderRadius.circular(8.0),
+              child: filteredUsers.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Tidak ada nasabah yang ditemukan',
+                        style: TextStyle(
+                          color: Colors.brown,
+                          fontSize: 16,
+                        ),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            nasabah['status'] == 'Aktif'
-                                ? Icons.check_circle
-                                : Icons.cancel,
-                            color: nasabah['status'] == 'Aktif'
-                                ? Colors.green
-                                : Colors.red,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    )
+                  : ListView.builder(
+                      itemCount: filteredUsers.length,
+                      itemBuilder: (context, index) {
+                        final nasabah = filteredUsers[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(12.0),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFDEFEA),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  nasabah['name'] ?? '',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.brown,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                                Icon(
+                                  nasabah['status'] == 'Aktif'
+                                      ? Icons.check_circle
+                                      : Icons.cancel,
+                                  color: nasabah['status'] == 'Aktif'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  size: 24,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  nasabah['address'] ?? '',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.brown,
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        nasabah['name'] ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.brown,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        nasabah['address'] ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.brown,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+                                ),
+                                const SizedBox(width: 8),
+                                SizedBox(
+                                  width: 100, // Fixed width for the button
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailNasabahPage(
+                                                  nasabah: nasabah),
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFFFF2E6),
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 8.0),
+                                    ),
+                                    child: const Text(
+                                      'View Details',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.brown,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 100, // Fixed width for the button
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        DetailNasabahPage(nasabah: nasabah),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFF2E6),
-                                elevation: 0,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 8.0),
-                              ),
-                              child: const Text(
-                                'View Details',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.brown,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -210,20 +236,20 @@ class _NasabahPklState extends State<NasabahPkl> {
     );
   }
 
-  // Fungsi untuk filter transactions
-  void filterTransactions(String query) {
-    if (data['transactions'] == null) return; // Early return jika data null
+  // Fungsi untuk filter users
+  void filterCustomers(String query) {
+    if (data['user'] == null || (data['user'] is! List))
+      return; // Early return jika data null
 
     setState(() {
       if (query.isEmpty) {
-        filteredUsers = List.from(data['transactions']);
+        filteredUsers = List.from(data['user']);
       } else {
-        filteredUsers = data['transactions'].where((transaction) {
-          if (transaction == null) return false;
+        filteredUsers = data['user'].where((user) {
+          if (user == null || !user.containsKey('name')) return false;
 
-          var cardId = transaction['card_id']?.toString() ?? '';
-          var cardNumber = data['card_numbers']?[cardId]?.toString() ?? '';
-          return cardNumber.toLowerCase().contains(query.toLowerCase());
+          String userName = user['name'].toString();
+          return userName.toLowerCase().contains(query.toLowerCase());
         }).toList();
       }
     });

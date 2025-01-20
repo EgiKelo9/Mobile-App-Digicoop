@@ -51,10 +51,10 @@ class _TransaksiDiprosesState extends State<TransaksiDiproses> {
     }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: 40),
+            padding: EdgeInsets.only(top: 10),
             child: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.brown),

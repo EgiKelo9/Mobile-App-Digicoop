@@ -62,10 +62,10 @@ class _rentangwaktuState extends State<rentangwaktu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
+        preferredSize: const Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 40),
+            padding: const EdgeInsets.only(top: 10),
             child: AppBar(
               backgroundColor: Colors.white,
               elevation: 0,

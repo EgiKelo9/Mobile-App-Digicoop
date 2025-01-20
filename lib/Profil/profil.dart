@@ -250,7 +250,7 @@ class _ProfilState extends State<Profil> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 60),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 70),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,

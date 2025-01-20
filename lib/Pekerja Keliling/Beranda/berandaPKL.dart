@@ -68,7 +68,7 @@ class _BerandaPklState extends State<BerandaPkl> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 30),
+              // const SizedBox(height: 30),
               // Header with profile
               Row(
                 children: [
@@ -222,17 +222,8 @@ class _BerandaPklState extends State<BerandaPkl> {
                         ),
                       ),
                       Text(
-                        '${formatCurrency(data['total_amount'] ?? 0)} /hari ini',
+                        '${formatCurrency(data['total_amount'] * 1.0 ?? 0)} /hari ini',
                         style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Aktivitas',
-                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -389,7 +380,7 @@ class _BerandaPklState extends State<BerandaPkl> {
               ),
             ),
             subtitle: Text(
-              formatCurrency(transaction['amount'] ?? 0),
+              formatCurrency(transaction['amount'] * 1.0 ?? 0),
               style: const TextStyle(fontSize: 12),
             ),
             trailing: Text(

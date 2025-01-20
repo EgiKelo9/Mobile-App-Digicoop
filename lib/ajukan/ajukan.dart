@@ -198,9 +198,10 @@ class _AjukanState extends State<Ajukan> {
     return Form(
       key: _formKey,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 60),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -721,7 +722,7 @@ class _AjukanState extends State<Ajukan> {
   }
 
   String formatCurrency(double amount) {
-    return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(
+    return 'Rp${amount.toStringAsFixed(0).replaceAllMapped(
           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
           (match) => '${match[1]}.',
         )}';

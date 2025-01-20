@@ -14,60 +14,64 @@ class _RolePageState extends State<RolePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Mendapatkan ukuran layar
+    final screenSize = MediaQuery.of(context).size;
+    final screenHeight = screenSize.height;
+    final screenWidth = screenSize.width;
+
+    // Menghitung padding yang responsif
+    final horizontalPadding = screenWidth * 0.08; // 8% dari lebar layar
+    final buttonWidth = (screenWidth - (horizontalPadding * 2) - 10) / 2; // Membagi ruang yang tersedia untuk 2 tombol
+
     return Scaffold(
-      body: Container(
-        width: 393,
-        height: 852,
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Stack(
-          children: [
-            // Welcome Text
-            const Positioned(
-              left: 30,
-              top: 130,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            width: screenWidth,
+            // Minimum height untuk memastikan konten tidak terpotong
+            constraints: BoxConstraints(
+              minHeight: screenHeight,
+            ),
+            decoration: const BoxDecoration(color: Colors.white),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Welcome Section
+                  SizedBox(height: screenHeight * 0.08), // Spacing yang responsif
                   Text(
                     'Selamat Datang!',
                     style: TextStyle(
-                      color: Color(0xFF7B5233),
-                      fontSize: 40,
-                      // fontFamily: 'Inter',
+                      color: const Color(0xFF7B5233),
+                      fontSize: screenWidth * 0.1, // Ukuran font responsif
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
                     'Pilih Role Anda\nterlebih dahulu.',
                     style: TextStyle(
-                      color: Color(0xFFD68F59),
-                      fontSize: 30,
-                      // fontFamily: 'Inter',
+                      color: const Color(0xFFD68F59),
+                      fontSize: screenWidth * 0.075, // Ukuran font responsif
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                ],
-              ),
-            ),
-            // Role Selection
-            Positioned(
-              left: 30,
-              top: 290,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Center(
+
+                  // Role Selection Section
+                  SizedBox(height: screenHeight * 0.05),
+                  Center(
                     child: Text(
                       'Login Sebagai',
                       style: TextStyle(
-                        color: Color(0xFF7B5233),
-                        fontSize: 24,
-                        // fontFamily: 'Inter',
+                        color: const Color(0xFF7B5233),
+                        fontSize: screenWidth * 0.06, // Ukuran font responsif
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Role Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -80,10 +84,10 @@ class _RolePageState extends State<RolePage> {
                           });
                         },
                         child: Container(
-                          width: 157,
-                          height: 40,
+                          width: buttonWidth,
+                          height: screenHeight * 0.05,
                           decoration: BoxDecoration(
-                            color: isNasabahSelected 
+                            color: isNasabahSelected
                                 ? const Color(0xFF6A584E)
                                 : const Color(0xFFFFEBDC),
                             borderRadius: BorderRadius.circular(8),
@@ -95,8 +99,7 @@ class _RolePageState extends State<RolePage> {
                                 color: isNasabahSelected
                                     ? const Color(0xFFFFEBDC)
                                     : const Color(0xFF6A584E),
-                                fontSize: 18,
-                                // fontFamily: 'Inter',
+                                fontSize: screenWidth * 0.045,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -113,11 +116,11 @@ class _RolePageState extends State<RolePage> {
                           });
                         },
                         child: Container(
-                          width: 157,
-                          height: 40,
+                          width: buttonWidth,
+                          height: screenHeight * 0.05,
                           decoration: BoxDecoration(
-                            color: isPegawaiSelected 
-                                ? const Color(0xFF6A584E) 
+                            color: isPegawaiSelected
+                                ? const Color(0xFF6A584E)
                                 : const Color(0xFFFFEBDC),
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -125,11 +128,10 @@ class _RolePageState extends State<RolePage> {
                             child: Text(
                               'Pegawai',
                               style: TextStyle(
-                                color: isPegawaiSelected 
-                                    ? Colors.white 
+                                color: isPegawaiSelected
+                                    ? Colors.white
                                     : const Color(0xFF7B5233),
-                                fontSize: 18,
-                                // fontFamily: 'Inter',
+                                fontSize: screenWidth * 0.045,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -138,54 +140,54 @@ class _RolePageState extends State<RolePage> {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            // Illustration Placeholder
-            Positioned(
-              left: 45,
-              top: 400,
-              child: Image.asset(
-                'assets/illustration.png', // Replace with your asset path
-                width: 300,
-                height: 300,
-              ),
-            ),
-            // Continue Button
-            Positioned(
-              left: 110,
-              top: 752,
-              child: GestureDetector(
-                onTap: () {
-                  if (isNasabahSelected) {
-                    // Nasabah action here
-                    MyApp.navigatorKey.currentState!.pushNamed('/login');
-                  } else if (isPegawaiSelected) {
-                    MyApp.navigatorKey.currentState!.pushNamed('/emp/login');
-                  }
-                },
-                child: Container(
-                  width: 180,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6A584E),
-                    borderRadius: BorderRadius.circular(8),
+
+                  // Illustration
+                  SizedBox(height: screenHeight * 0.05),
+                  Center(
+                    child: Image.asset(
+                      'assets/illustration.png',
+                      width: screenWidth * 0.8,
+                      height: screenHeight * 0.3,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                  child: const Center(
-                    child: Text(
-                      'Lanjutkan',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        // fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
+
+                  // Continue Button
+                  SizedBox(height: screenHeight * 0.05),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (isNasabahSelected) {
+                          MyApp.navigatorKey.currentState!.pushNamed('/login');
+                        } else if (isPegawaiSelected) {
+                          MyApp.navigatorKey.currentState!.pushNamed('/emp/login');
+                        }
+                      },
+                      child: Container(
+                        width: screenWidth * 0.5,
+                        height: screenHeight * 0.06,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6A584E),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Lanjutkan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth * 0.045,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  SizedBox(height: screenHeight * 0.05),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

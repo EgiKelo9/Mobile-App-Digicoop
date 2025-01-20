@@ -21,7 +21,7 @@ class _loginnbState extends State<loginnb> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(80),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.only(top: 40),

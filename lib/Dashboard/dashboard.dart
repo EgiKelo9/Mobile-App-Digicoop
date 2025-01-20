@@ -58,8 +58,8 @@ class _BerandaState extends State<Beranda> {
       return Center(child: CircularProgressIndicator());
     }
 
-    double tabungan = data['balance_tabungan'] ?? 0.0;
-    double penarikan = data['balance_penarikan'] ?? 0.0;
+    double tabungan = data['balance_tabungan'] * 1.0 ?? data['balance_tabungan'];
+    double penarikan = data['balance_penarikan'] * 1.0 ?? data['balance_penarikan'];
     double selisih = tabungan - penarikan;
     bool isPositive = selisih >= 0;
 
@@ -72,7 +72,7 @@ class _BerandaState extends State<Beranda> {
           await getData();
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 20.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -99,7 +99,7 @@ class _BerandaState extends State<Beranda> {
                             ),
                           ),
                           Text(
-                            data['user']?['name'] ?? "Nama tidak tersedia",
+                            data['user']['name'],
                             // data['user']("name"),
                             style: TextStyle(
                               fontSize: 18,
@@ -182,12 +182,12 @@ class _BerandaState extends State<Beranda> {
                       Text(
                         _saldoIndex == 0
                             ? formatCurrency(
-                                data['card']['balance_tabungan'] ?? 0.0)
+                                data['card']['balance_tabungan'] * 1.0 ?? 0.0)
                             : _saldoIndex == 1
                                 ? formatCurrency(
-                                    data['card']['balance_deposito'] ?? 0.0)
+                                    data['card']['balance_deposito'] * 1.0 ?? 0.0)
                                 : formatCurrency(
-                                    data['card']['balance_pinjaman'] ?? 0.0),
+                                    data['card']['balance_pinjaman'] * 1.0 ?? 0.0),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -355,7 +355,7 @@ class _BerandaState extends State<Beranda> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  formatCurrency(transaction['amount'] ?? 0),
+                                  formatCurrency(transaction['amount'] * 1.0 ?? 0),
                                 ),
                                 trailing: Text(
                                   formatDateTime(

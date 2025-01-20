@@ -54,11 +54,11 @@ class _RiwayatNasabahState extends State<RiwayatNasabah> {
     }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
             padding:
-                EdgeInsets.only(top: 40), // Sesuaikan spacing yang diinginkan
+                EdgeInsets.only(top: 10), // Sesuaikan spacing yang diinginkan
             child: AppBar(
               title: Text(
                 "Nasabah",

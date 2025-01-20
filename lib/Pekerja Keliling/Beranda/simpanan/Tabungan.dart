@@ -117,11 +117,11 @@ class TabunganState extends State<Tabungan> {
     }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
             padding:
-                EdgeInsets.only(top: 40), // Sesuaikan spacing yang diinginkan
+                EdgeInsets.only(top: 10), // Sesuaikan spacing yang diinginkan
             child: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.brown),
@@ -197,7 +197,7 @@ class TabunganState extends State<Tabungan> {
                         return tabunganCard(
                           transaction['id'],
                           cardNumber,
-                          transaction['amount'] ?? 0,
+                          transaction['amount'] * 1.0 ?? 0,
                           transaction['description'] ?? 'Tidak ada deskripsi',
                         );
                       },
@@ -408,7 +408,7 @@ class TabunganState extends State<Tabungan> {
                                   _showStatusDialog(
                                       "Transaksi Diterima",
                                       "Transaksi telah diterima. Saldo pada nasabah telah diperbarui.",
-                                      "/daftar-tabungan");
+                                      "/emp/daftar-tabungan");
                                   await getData();
                                 }
                               },

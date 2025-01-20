@@ -57,10 +57,10 @@ class _RekapHarianState extends State<RekapHarian> {
     }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(60),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: 40),
+            padding: EdgeInsets.only(top: 10),
             child: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.brown),
@@ -163,7 +163,7 @@ class _RekapHarianState extends State<RekapHarian> {
                                       ['card_id']
                                   .toString()]
                               .toString(),
-                          filteredTransactions[index]['amount'] as double,
+                          filteredTransactions[index]['amount'] * 1.0,
                           filteredTransactions[index]['updated_at'].toString(),
                         );
                       },
